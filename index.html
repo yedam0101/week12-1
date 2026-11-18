@@ -1,0 +1,2171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Solar System Adventure</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Arial Rounded MT Bold", Arial, sans-serif;
+  background: #eff4ff;
+  color: #203052;
+}
+
+header {
+  background: linear-gradient(120deg,#263579,#6244a8);
+  color: white;
+  padding: 25px 15px;
+  text-align: center;
+}
+
+h1 {
+  color: #ffe577;
+  font-size: clamp(28px,4vw,44px);
+  margin: 0;
+}
+
+header p {
+  letter-spacing: 3px;
+  color: #e6eaff;
+}
+
+main {
+  max-width: 1350px;
+  margin: auto;
+  padding: 20px;
+}
+
+nav {
+  display: grid;
+  grid-template-columns: repeat(5,1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+button {
+  border: none;
+  border-radius: 14px;
+  padding: 15px 20px;
+  font-size: 17px;
+  font-weight: bold;
+  font-family: inherit;
+  background: #e5edff;
+  color: #263579;
+  cursor: pointer;
+  transition: .2s;
+}
+
+button:hover {
+  filter: brightness(1.05);
+  transform: translateY(-2px);
+}
+
+button:disabled {
+  opacity: .4;
+  cursor: default;
+  transform: none;
+}
+
+.tab {
+  background: white;
+  border: 2px solid #d9e2fa;
+  line-height: 1.6;
+}
+
+.tab.active {
+  background: #ffe577;
+  border-color: #efc43b;
+}
+
+.tab span {
+  display: block;
+  font-size: 32px;
+}
+
+.tab small {
+  display: block;
+  font-size: 13px;
+}
+
+.settings {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  background: white;
+  padding: 16px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+
+.settings label {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+select {
+  border: 1px solid #ccd6ed;
+  border-radius: 8px;
+  padding: 9px;
+  background: #f4f7ff;
+  color: #263579;
+}
+
+.stage {
+  background: white;
+  border-radius: 24px;
+  padding: 22px;
+  text-align: center;
+  box-shadow: 0 5px 25px #283d7512;
+}
+
+h2 {
+  margin: 0 0 15px;
+  color: #344691;
+}
+
+#progressText {
+  color: #657395;
+}
+
+.progress {
+  height: 10px;
+  background: #e5ebfa;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 15px 0 20px;
+}
+
+#progressBar {
+  background: linear-gradient(90deg,#8279e8,#59c7ae);
+  width: 0;
+  height: 100%;
+  transition: width .3s;
+}
+
+.book {
+  background: #000;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+}
+
+#bookImage {
+  width: 100%;
+  max-height: 65vh;
+  object-fit: contain;
+  display: block;
+}
+
+#errorMessage {
+  color: #ffdf89;
+  padding: 30px;
+  line-height: 1.8;
+}
+
+#errorMessage button {
+  margin-top: 15px;
+}
+
+#sentence {
+  font-size: clamp(27px,4vw,46px);
+  font-weight: bold;
+  line-height: 1.5;
+  padding: 22px 15px;
+  margin: 20px 0 10px;
+  background: #f0f4ff;
+  border-radius: 18px;
+  transition: .25s;
+  cursor: pointer;
+}
+
+#sentence.listening {
+  background: #dcecff;
+  color: #214ca2;
+}
+
+#sentence.repeat {
+  background: #ffeb64;
+  color: #242424;
+  box-shadow: 0 0 18px #ffdc6599;
+}
+
+#status {
+  font-size: 27px;
+  font-weight: bold;
+  color: #5645a6;
+  min-height: 45px;
+  margin-top: 15px;
+}
+
+#countdown {
+  font-size: 36px;
+  color: #269572;
+  font-weight: bold;
+  min-height: 45px;
+}
+
+#meaning {
+  font-size: 21px;
+  color: #596783;
+  padding: 12px;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.start {
+  background: #ffe477;
+  color: #3c3421;
+}
+
+.next {
+  background: #b7efd8;
+  color: #22674f;
+}
+
+.stop {
+  background: #ffccd2;
+  color: #9a3546;
+}
+
+#pageButtons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0;
+}
+
+.pageButton {
+  border-radius: 50%;
+  height: 38px;
+  width: 38px;
+  padding: 0;
+}
+
+.pageButton.active {
+  background: #7762d5;
+  color: white;
+}
+
+#wordPicture {
+  background: black;
+  border-radius: 22px;
+  overflow: hidden;
+  width: min(480px,90%);
+  margin: auto;
+}
+
+#wordImage {
+  width: 100%;
+  display: block;
+  aspect-ratio: 1;
+  object-fit: contain;
+}
+
+#choices {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 15px;
+  margin: 25px 0;
+}
+
+.choice {
+  background: #141b39;
+  color: white;
+  border: 4px solid #d7dff5;
+  border-radius: 20px;
+  padding: 10px;
+}
+
+.choice img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+.choice.correct {
+  border-color: #42bc82;
+  background: #20704c;
+}
+
+.choice.wrong {
+  border-color: #f3af6e;
+}
+
+.choiceName {
+  font-size: 27px;
+  padding: 10px;
+}
+
+#question {
+  font-size: clamp(27px,4vw,42px);
+}
+
+#feedback {
+  font-size: 26px;
+  color: #26845e;
+  min-height: 45px;
+  font-weight: bold;
+}
+
+#stars {
+  font-size: 27px;
+  color: #c69410;
+  margin: 15px;
+}
+
+.teacherTip {
+  background: #e3eafa;
+  border-radius: 16px;
+  padding: 18px;
+  margin-top: 20px;
+  line-height: 1.8;
+  font-size: 15px;
+}
+
+.fileSettings {
+  text-align: center;
+  padding: 20px;
+  color: #64718f;
+  font-size: 13px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@media(max-width:750px) {
+  nav {
+    grid-template-columns: repeat(2,1fr);
+  }
+
+  main {
+    padding: 10px;
+  }
+
+  .stage {
+    padding: 12px;
+  }
+
+  button {
+    font-size: 15px;
+    padding: 12px;
+  }
+
+  #choices {
+    gap: 7px;
+  }
+
+  .choice {
+    padding: 4px;
+  }
+
+  .pageButton {
+    padding: 0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🚀 My Solar System Adventure</h1>
+  <p>LISTEN · READ · EXPLORE</p>
+</header>
+
+<main>
+
+<nav>
+  <button class="tab active" onclick="changeMode(0)">
+    <span>🎧</span>
+    STEP 1
+    <small>Listen to the Story</small>
+  </button>
+
+  <button class="tab" onclick="changeMode(1)">
+    <span>📖</span>
+    STEP 2
+    <small>Read Together</small>
+  </button>
+
+  <button class="tab" onclick="changeMode(2)">
+    <span>🪐</span>
+    STEP 3
+    <small>Listen and Repeat</small>
+  </button>
+
+  <button class="tab" onclick="changeMode(3)">
+    <span>🔍</span>
+    STEP 4
+    <small>Find the Planet</small>
+  </button>
+
+  <button class="tab" onclick="changeMode(4)">
+    <span>🌟</span>
+    STEP 5
+    <small>Listen Again</small>
+  </button>
+</nav>
+
+<div class="settings">
+
+  <label>
+    Reading Speed
+    <select id="rate">
+      <option value="0.65">Very Slow</option>
+      <option value="0.8" selected>Slow</option>
+      <option value="1">Normal</option>
+    </select>
+  </label>
+
+  <label>
+    Voice
+    <select id="voice">
+      <option value="">English Default</option>
+    </select>
+  </label>
+
+  <label>
+    Repeat Time
+    <select id="repeatTime">
+      <option value="4">4 seconds</option>
+      <option value="6" selected>6 seconds</option>
+      <option value="8">8 seconds</option>
+      <option value="10">10 seconds</option>
+    </select>
+  </label>
+
+  <label>
+    Reading Mode
+    <select id="readingMode">
+      <option value="manual">Teacher Controlled</option>
+      <option value="auto">Automatic</option>
+    </select>
+  </label>
+
+</div>
+
+<section class="stage">
+
+  <h2 id="title"></h2>
+
+  <div id="progressText"></div>
+
+  <div class="progress">
+    <div id="progressBar"></div>
+  </div>
+
+  <div id="readingArea">
+
+    <div class="book" id="book">
+
+      <img id="bookImage" alt="Original picture book">
+
+      <div id="errorMessage" class="hidden">
+        원본 이미지 파일을 찾을 수 없습니다.
+        <br>
+        아래 버튼을 눌러 사진 10장을 선택해 주세요.
+        <br>
+        <button onclick="chooseFiles()">
+          📁 그림책 사진 선택
+        </button>
+      </div>
+
+    </div>
+
+    <div id="wordPicture" class="hidden">
+      <img id="wordImage" alt="Planet picture">
+    </div>
+
+    <div id="pageButtons"></div>
+
+    <div id="sentence"
+         onclick="repeatCurrent()"></div>
+
+    <div id="meaning" class="hidden"></div>
+
+    <div id="status">Ready?</div>
+
+    <div id="countdown"></div>
+
+    <div class="controls">
+
+      <button id="prevButton" onclick="previous()">
+        ◀ Back
+      </button>
+
+      <button class="start" onclick="startReading()">
+        ▶ Start
+      </button>
+
+      <button onclick="repeatCurrent()">
+        🔊 Read Again
+      </button>
+
+      <button class="stop" onclick="stopReading()">
+        ■ Stop
+      </button>
+
+      <button class="next" id="nextButton"
+              onclick="next()">
+        Next ▶
+      </button>
+
+    </div>
+
+    <div class="controls">
+
+      <button onclick="toggleMeaning()">
+        한국어 뜻 보기 / 숨기기
+      </button>
+
+      <button onclick="restart()">
+        ↻ 처음부터
+      </button>
+
+    </div>
+
+  </div>
+
+  <div id="gameArea" class="hidden">
+
+    <div id="stars"></div>
+
+    <h2 id="question"></h2>
+
+    <button class="start" onclick="readQuestion()">
+      🔊 Listen to the Question
+    </button>
+
+    <div id="choices"></div>
+
+    <div id="feedback"></div>
+
+    <button class="next" id="gameNext"
+            onclick="nextQuestion()" disabled>
+      Next Question ▶
+    </button>
+
+  </div>
+
+</section>
+
+<div id="teacherTip" class="teacherTip"></div>
+
+<div class="fileSettings">
+
+  <button onclick="chooseFiles()">
+    📁 원본 이미지 직접 연결하기
+  </button>
+
+  <input id="fileInput"
+         type="file"
+         accept="image/*"
+         multiple
+         hidden>
+
+  <p id="fileStatus">
+    원본 그림책 사진 자동 연결
+  </p>
+
+</div>
+
+</main>
+
+<script>
+
+/* =====================================
+   1. 실제 원본 이미지 파일명
+
+   첫 페이지는 번호가 없는 파일입니다.
+   이후 01부터 09까지 순서대로 표시합니다.
+===================================== */
+
+const bookImages = [
+
+  "KakaoTalk_20261118_185343855.jpg",
+
+  "KakaoTalk_20261118_185343855_01.jpg",
+
+  "KakaoTalk_20261118_185343855_02.jpg",
+
+  "KakaoTalk_20261118_185343855_03.jpg",
+
+  "KakaoTalk_20261118_185343855_04.jpg",
+
+  "KakaoTalk_20261118_185343855_05.jpg",
+
+  "KakaoTalk_20261118_185343855_06.jpg",
+
+  "KakaoTalk_20261118_185343855_07.jpg",
+
+  "KakaoTalk_20261118_185343855_08.jpg",
+
+  "KakaoTalk_20261118_185343855_09.jpg"
+
+];
+
+/* =====================================
+   2. 다양한 폴더 구조 자동 지원
+===================================== */
+
+const imageFolders = [
+
+  "./asset/",
+  "./",
+  "./assets/",
+  "../asset/",
+  "../assets/",
+  "./Asset/",
+  "./Assets/"
+
+];
+
+const resolvedImages = new Map();
+const uploadedImages = new Map();
+const cropCache = new Map();
+const imageCache = new Map();
+
+const $ = id => document.getElementById(id);
+
+function loadImage(src) {
+
+  return new Promise((resolve,reject)=>{
+
+    const img = new Image();
+
+    img.onload = () => resolve(img);
+
+    img.onerror = () => reject(
+      new Error("Image not found")
+    );
+
+    img.src = src;
+
+  });
+
+}
+
+async function resolveImage(page) {
+
+  const filename = bookImages[page];
+
+  if(uploadedImages.has(filename)) {
+
+    return uploadedImages.get(filename);
+
+  }
+
+  if(resolvedImages.has(filename)) {
+
+    return resolvedImages.get(filename);
+
+  }
+
+  for(const folder of imageFolders) {
+
+    const path = folder + filename;
+
+    try {
+
+      await loadImage(path);
+
+      resolvedImages.set(filename,path);
+
+      return path;
+
+    } catch(error) {
+
+      // 다른 폴더에서 계속 찾기
+
+    }
+
+  }
+
+  throw new Error(
+    "Cannot find image: "+filename
+  );
+
+}
+
+function chooseFiles() {
+
+  $("fileInput").click();
+
+}
+
+$("fileInput").addEventListener(
+  "change",
+  async function(event) {
+
+    stopReading();
+
+    const files = Array.from(event.target.files);
+
+    files.forEach(file=>{
+
+      if(bookImages.includes(file.name)) {
+
+        if(uploadedImages.has(file.name)) {
+
+          URL.revokeObjectURL(
+            uploadedImages.get(file.name)
+          );
+
+        }
+
+        uploadedImages.set(
+          file.name,
+          URL.createObjectURL(file)
+        );
+
+      }
+
+    });
+
+    cropCache.clear();
+    imageCache.clear();
+
+    $("fileStatus").textContent =
+      `${uploadedImages.size} / 10개의 원본 이미지 연결 완료`;
+
+    if(mode===3) {
+
+      await setupQuestion();
+
+    } else {
+
+      await render();
+
+    }
+
+  }
+);
+
+/* =====================================
+   3. 원본 그림책의 영어 문장
+===================================== */
+
+const story = [
+
+  // PAGE 1: Night Sky
+
+  [
+    [
+      "Look up at the sky.",
+      "하늘을 올려다보세요."
+    ],
+    [
+      "What do you see?",
+      "무엇이 보이나요?"
+    ]
+  ],
+
+  // PAGE 2: Moon
+
+  [
+    [
+      "Can you see the moon?",
+      "달이 보이나요?"
+    ],
+    [
+      "Astronauts have left their footprints on the moon!",
+      "우주비행사들이 달에 발자국을 남겼어요!"
+    ]
+  ],
+
+  // PAGE 3: Sun
+
+  [
+    [
+      "In the daytime we see the sun.",
+      "낮에는 태양을 볼 수 있어요."
+    ],
+    [
+      "It is the center of the solar system.",
+      "태양은 태양계의 중심이에요."
+    ],
+    [
+      "Let's learn about all the planets that travel around it.",
+      "태양 주위를 도는 모든 행성에 대해 알아봐요."
+    ],
+    [
+      "The sun warms the Earth.",
+      "태양은 지구를 따뜻하게 해요."
+    ]
+  ],
+
+  // PAGE 4: Mercury and Venus
+
+  [
+    [
+      "Mercury is the closest planet to the sun.",
+      "수성은 태양에 가장 가까운 행성이에요."
+    ],
+    [
+      "Ouch! Asteroids and comets often hit this planet.",
+      "아야! 소행성과 혜성이 종종 이 행성에 부딪혀요."
+    ],
+    [
+      "Venus is the brightest planet.",
+      "금성은 가장 밝게 보이는 행성이에요."
+    ],
+    [
+      "Whooo! Venus is the hottest planet in the solar system!",
+      "우와! 금성은 태양계에서 가장 뜨거운 행성이에요!"
+    ]
+  ],
+
+  // PAGE 5: Earth
+
+  [
+    [
+      "We live on a planet called Earth.",
+      "우리는 지구라는 행성에 살아요."
+    ],
+    [
+      "From space it looks like a swirled blue marble.",
+      "우주에서 보면 소용돌이 무늬가 있는 파란 구슬 같아요."
+    ],
+    [
+      "Earth is the third planet from the sun.",
+      "지구는 태양에서 세 번째 행성이에요."
+    ]
+  ],
+
+  // PAGE 6: Mars and Jupiter
+
+  [
+    [
+      "Can you point to the red planet?",
+      "빨간 행성을 가리켜 볼 수 있나요?"
+    ],
+    [
+      "That's Mars!",
+      "화성이에요!"
+    ],
+    [
+      "Mars has giant volcanoes.",
+      "화성에는 거대한 화산들이 있어요."
+    ],
+    [
+      "Jupiter is the largest planet.",
+      "목성은 가장 큰 행성이에요."
+    ],
+    [
+      "Jupiter is the stormiest planet in the solar system.",
+      "목성은 태양계에서 폭풍이 매우 심한 행성이에요."
+    ]
+  ],
+
+  // PAGE 7: Saturn
+
+  [
+    [
+      "Saturn has rings that go round and round.",
+      "토성에는 빙 둘러 있는 고리들이 있어요."
+    ],
+    [
+      "The rings are made of ice, dust, and rock.",
+      "고리들은 얼음, 먼지, 암석으로 이루어져 있어요."
+    ]
+  ],
+
+  // PAGE 8: Uranus and Neptune
+
+  [
+    [
+      "Uranus and Neptune are dark and cold.",
+      "천왕성과 해왕성은 어둡고 추워요."
+    ],
+    [
+      "Ice crystals give Uranus its blue color.",
+      "얼음 결정이 천왕성을 파랗게 보이게 해요."
+    ],
+    [
+      "Uranus rotates on its side.",
+      "천왕성은 옆으로 누운 채 자전해요."
+    ],
+    [
+      "It is very windy on Neptune.",
+      "해왕성에는 바람이 아주 많이 불어요."
+    ]
+  ],
+
+  // PAGE 9: Pluto
+
+  [
+    [
+      "Pluto is a tiny dwarf planet, very far away from the sun.",
+      "명왕성은 태양에서 아주 멀리 있는 작은 왜행성이에요."
+    ],
+    [
+      "Pluto is smaller than the Earth's moon.",
+      "명왕성은 지구의 달보다 작아요."
+    ]
+  ],
+
+  // PAGE 10: Solar System
+
+  [
+    [
+      "The solar system is an exciting place!",
+      "태양계는 신나는 곳이에요!"
+    ],
+    [
+      "Where would you like to go first?",
+      "어디에 가장 먼저 가 보고 싶나요?"
+    ]
+  ]
+
+];
+
+/* =====================================
+   4. 원본 그림에서 단어 이미지 추출
+
+   이미지 기준 상대 좌표
+   [왼쪽, 위쪽, 너비, 높이]
+===================================== */
+
+const words = [
+
+  {
+    name:"Sun",
+    ko:"태양",
+    page:2,
+    crop:[.35,.25,.30,.68]
+  },
+
+  {
+    name:"Mercury",
+    ko:"수성",
+    page:3,
+    crop:[.21,.38,.16,.38]
+  },
+
+  {
+    name:"Venus",
+    ko:"금성",
+    page:3,
+    crop:[.58,.32,.24,.56]
+  },
+
+  {
+    name:"Earth",
+    ko:"지구",
+    page:4,
+    crop:[.52,.08,.33,.77]
+  },
+
+  {
+    name:"Mars",
+    ko:"화성",
+    page:5,
+    crop:[.18,.38,.22,.49]
+  },
+
+  {
+    name:"Jupiter",
+    ko:"목성",
+    page:5,
+    crop:[.52,.14,.32,.78]
+  },
+
+  {
+    name:"Saturn",
+    ko:"토성",
+    page:6,
+    crop:[.19,.18,.65,.79]
+  },
+
+  {
+    name:"Uranus",
+    ko:"천왕성",
+    page:7,
+    crop:[.11,.29,.24,.64]
+  },
+
+  {
+    name:"Neptune",
+    ko:"해왕성",
+    page:7,
+    crop:[.59,.38,.20,.46]
+  },
+
+  {
+    name:"Pluto",
+    ko:"명왕성",
+    page:8,
+    crop:[.69,.11,.13,.30]
+  },
+
+  {
+    name:"Moon",
+    ko:"달",
+    page:1,
+    crop:[.59,.07,.24,.57]
+  },
+
+  {
+    name:"Star",
+    ko:"별",
+    page:0,
+    crop:[.29,.12,.055,.13]
+  },
+
+  {
+    name:"Comet",
+    ko:"혜성",
+    page:9,
+    crop:[.126,.53,.10,.19]
+  },
+
+  {
+    name:"Space",
+    ko:"우주",
+    page:9,
+    crop:[.10,.03,.80,.93]
+  },
+
+  {
+    name:"Night",
+    ko:"밤",
+    page:0,
+    crop:[.10,.03,.80,.93]
+  },
+
+  {
+    name:"Planet",
+    ko:"행성",
+    page:5,
+    crop:[.18,.38,.22,.49]
+  }
+
+];
+
+/* =====================================
+   5. 이미지 표시 및 자르기
+===================================== */
+
+async function showBookImage(page) {
+
+  const image = $("bookImage");
+
+  const currentPage = page;
+
+  try {
+
+    const src = await resolveImage(page);
+
+    const item = getItems()[index];
+
+    if(mode===2 || mode===3) return;
+
+    if(!item || item.page!==currentPage) return;
+
+    image.src = src;
+
+    image.classList.remove("hidden");
+
+    $("errorMessage").classList.add("hidden");
+
+  } catch(error) {
+
+    const item = getItems()[index];
+
+    if(mode===2 || mode===3) return;
+
+    if(!item || item.page!==currentPage) return;
+
+    image.classList.add("hidden");
+
+    $("errorMessage").classList.remove("hidden");
+
+  }
+
+}
+
+async function getPlanetImage(word) {
+
+  if(cropCache.has(word.name)) {
+
+    return cropCache.get(word.name);
+
+  }
+
+  let src;
+
+  try {
+
+    src = await resolveImage(word.page);
+
+    let img = imageCache.get(src);
+
+    if(!img) {
+
+      img = await loadImage(src);
+
+      imageCache.set(src,img);
+
+    }
+
+    const [x,y,w,h] = word.crop;
+
+    const sx = x*img.naturalWidth;
+    const sy = y*img.naturalHeight;
+
+    const sw = w*img.naturalWidth;
+    const sh = h*img.naturalHeight;
+
+    const canvas = document.createElement("canvas");
+
+    canvas.width = 600;
+    canvas.height = 600;
+
+    const ctx = canvas.getContext("2d");
+
+    ctx.fillStyle = "#000000";
+
+    ctx.fillRect(0,0,600,600);
+
+    const scale = Math.min(600/sw,600/sh);
+
+    const dw = sw*scale;
+    const dh = sh*scale;
+
+    ctx.drawImage(
+      img,
+      sx,sy,sw,sh,
+      (600-dw)/2,
+      (600-dh)/2,
+      dw,dh
+    );
+
+    const result = canvas.toDataURL(
+      "image/jpeg",0.95
+    );
+
+    cropCache.set(word.name,result);
+
+    return result;
+
+  } catch(error) {
+
+    // 로컬 파일에서 Canvas 추출이 제한될 경우
+    // 원본 그림의 해당 부분만 SVG로 표시합니다.
+
+    if(src) {
+
+      const [x,y,w,h] = word.crop;
+
+      const img = await loadImage(src);
+
+      const width = img.naturalWidth;
+      const height = img.naturalHeight;
+
+      const canvas = document.createElement("canvas");
+
+      canvas.width = 600;
+      canvas.height = 600;
+
+      return {
+        src:src,
+        crop:[x,y,w,h],
+        width:width,
+        height:height
+      };
+
+    }
+
+    return "";
+
+  }
+
+}
+
+function applyPicture(img,result) {
+
+  img.style.objectFit = "contain";
+
+  img.style.clipPath = "";
+
+  img.style.transform = "";
+
+  if(typeof result==="string") {
+
+    img.src = result;
+
+    return;
+
+  }
+
+  if(result && result.src) {
+
+    img.src = result.src;
+
+    // Canvas가 제한된 환경에서는
+    // 원본 페이지 전체를 대신 표시
+
+    img.style.objectFit = "contain";
+
+  }
+
+}
+
+/* =====================================
+   6. 앱 데이터
+===================================== */
+
+const sentences = story.flatMap(
+
+  (page,pageIndex)=>page.map(
+
+    line=>({
+
+      text:line[0],
+      ko:line[1],
+      page:pageIndex
+
+    })
+
+  )
+
+);
+
+const titles = [
+
+  "🎧 Listen to the Story",
+  "📖 Read Together",
+  "🪐 Listen and Repeat",
+  "🔍 Find the Planet",
+  "🌟 Listen Again"
+
+];
+
+const tips = [
+
+  "교사용 TIP: 처음 그림책을 들을 때는 따라 읽기를 요구하지 않고, 원본 그림과 이야기의 의미에 집중하도록 도와주세요.",
+
+  "교사용 TIP: 파란색 문장은 듣는 시간입니다. 노란색 강조 표시와 Your turn!이 나오면 유아와 함께 읽어 주세요.",
+
+  "교사용 TIP: 원본 그림책에서 추출한 그림을 보면서 영어 단어를 듣고 따라 말해요.",
+
+  "교사용 TIP: 영어 음성을 듣고 행성 그림을 선택하는 활동입니다. 아직 영어 글자를 읽지 못하는 유아도 참여할 수 있습니다.",
+
+  "교사용 TIP: 그림책을 다시 들으며 익숙해진 단어와 문장을 발견하도록 해 주세요. 마지막에는 가 보고 싶은 행성에 대해 이야기해 보세요."
+
+];
+
+let mode = 0;
+let index = 0;
+let session = 0;
+
+let voices = [];
+let meaningVisible = false;
+
+let gameOrder = [];
+let gameIndex = 0;
+let score = 0;
+let solved = false;
+let target = null;
+
+/* =====================================
+   7. 음성 읽기 기능
+===================================== */
+
+function loadVoices() {
+
+  if(!("speechSynthesis" in window)) return;
+
+  voices = speechSynthesis.getVoices().filter(
+
+    voice=>voice.lang.toLowerCase().startsWith("en")
+
+  );
+
+  const previous = $("voice").value;
+
+  $("voice").replaceChildren(
+    new Option("English Default","")
+  );
+
+  voices.forEach((voice,i)=>{
+
+    $("voice").appendChild(
+
+      new Option(
+        voice.name+" ("+voice.lang+")",
+        i
+      )
+
+    );
+
+  });
+
+  if(previous!=="") {
+
+    $("voice").value = previous;
+
+  }
+
+}
+
+if("speechSynthesis" in window) {
+
+  loadVoices();
+
+  speechSynthesis.onvoiceschanged = loadVoices;
+
+}
+
+function speak(text,token=session) {
+
+  return new Promise(resolve=>{
+
+    if(token!==session) {
+
+      resolve(false);
+
+      return;
+
+    }
+
+    if(!("speechSynthesis" in window)) {
+
+      $("status").textContent =
+        "Chrome 또는 Edge에서 실행해 주세요.";
+
+      resolve(false);
+
+      return;
+
+    }
+
+    const speech = new SpeechSynthesisUtterance(text);
+
+    speech.lang = "en-US";
+
+    speech.rate = Number($("rate").value);
+
+    speech.pitch = 1.05;
+
+    const selected = $("voice").value;
+
+    if(selected!=="" && voices[Number(selected)]) {
+
+      speech.voice = voices[Number(selected)];
+
+    } else {
+
+      const english = voices.find(
+        voice=>voice.lang==="en-US"
+      );
+
+      if(english) speech.voice = english;
+
+    }
+
+    let finished = false;
+
+    function finish(success) {
+
+      if(finished) return;
+
+      finished = true;
+
+      clearTimeout(timeout);
+
+      resolve(success && token===session);
+
+    }
+
+    const timeout = setTimeout(()=>{
+
+      finish(false);
+
+      if(token===session) {
+
+        speechSynthesis.cancel();
+
+        $("status").textContent =
+          "음성을 다시 재생해 주세요.";
+
+      }
+
+    },Math.max(15000,text.length*250));
+
+    speech.onend = ()=>finish(true);
+
+    speech.onerror = ()=>{
+
+      finish(false);
+
+      if(token===session) {
+
+        $("status").textContent =
+          "음성을 다시 재생해 주세요.";
+
+      }
+
+    };
+
+    speechSynthesis.speak(speech);
+
+  });
+
+}
+
+function sleep(ms) {
+
+  return new Promise(resolve=>setTimeout(resolve,ms));
+
+}
+
+function stopReading() {
+
+  session++;
+
+  if("speechSynthesis" in window) {
+
+    speechSynthesis.cancel();
+
+  }
+
+  $("sentence").className = "";
+
+  $("status").textContent = "Ready?";
+
+  $("countdown").textContent = "";
+
+}
+
+/* =====================================
+   8. 화면 표시
+===================================== */
+
+function getItems() {
+
+  if(mode===2) {
+
+    return words.map(word=>({
+
+      text:word.name,
+      ko:word.ko,
+      word:word
+
+    }));
+
+  }
+
+  return sentences;
+
+}
+
+function updateProgress(current,total,label) {
+
+  $("progressText").textContent = label;
+
+  $("progressBar").style.width =
+    (current/total*100)+"%";
+
+}
+
+function showPageButtons(page) {
+
+  const container = $("pageButtons");
+
+  container.replaceChildren();
+
+  bookImages.forEach((file,i)=>{
+
+    const button = document.createElement("button");
+
+    button.className =
+      "pageButton"+(page===i?" active":"");
+
+    button.textContent = i+1;
+
+    button.onclick = ()=>goToPage(i);
+
+    container.appendChild(button);
+
+  });
+
+}
+
+function goToPage(page) {
+
+  stopReading();
+
+  index = sentences.findIndex(
+    sentence=>sentence.page===page
+  );
+
+  render();
+
+}
+
+async function render() {
+
+  const items = getItems();
+
+  const item = items[index];
+
+  if(!item) return;
+
+  const currentMode = mode;
+  const currentIndex = index;
+
+  $("sentence").textContent = item.text;
+
+  $("sentence").className = "";
+
+  $("meaning").textContent = item.ko;
+
+  $("meaning").classList.toggle(
+    "hidden",!meaningVisible
+  );
+
+  $("countdown").textContent = "";
+
+  $("prevButton").disabled = index===0;
+
+  $("nextButton").textContent =
+    index===items.length-1?"Finish ✓":"Next ▶";
+
+  if(mode===2) {
+
+    $("book").classList.add("hidden");
+
+    $("wordPicture").classList.remove("hidden");
+
+    $("pageButtons").classList.add("hidden");
+
+    $("wordImage").removeAttribute("src");
+
+    $("wordImage").alt = item.text;
+
+    updateProgress(
+      index+1,
+      items.length,
+      `Word ${index+1} / ${items.length}`
+    );
+
+    const result = await getPlanetImage(item.word);
+
+    if(mode===currentMode && index===currentIndex) {
+
+      applyPicture($("wordImage"),result);
+
+    }
+
+  } else {
+
+    $("book").classList.remove("hidden");
+
+    $("wordPicture").classList.add("hidden");
+
+    $("pageButtons").classList.remove("hidden");
+
+    showPageButtons(item.page);
+
+    updateProgress(
+      index+1,
+      items.length,
+      `Page ${item.page+1} / 10 · Sentence ${index+1} / ${items.length}`
+    );
+
+    await showBookImage(item.page);
+
+  }
+
+}
+
+function changeMode(newMode) {
+
+  stopReading();
+
+  mode = newMode;
+  index = 0;
+
+  meaningVisible = false;
+
+  document.querySelectorAll(".tab").forEach(
+
+    (button,i)=>button.classList.toggle(
+      "active",i===mode
+    )
+
+  );
+
+  $("title").textContent = titles[mode];
+
+  $("teacherTip").textContent = tips[mode];
+
+  $("readingArea").classList.toggle(
+    "hidden",mode===3
+  );
+
+  $("gameArea").classList.toggle(
+    "hidden",mode!==3
+  );
+
+  if(mode===3) {
+
+    initializeGame();
+
+  } else {
+
+    render();
+
+  }
+
+}
+
+/* =====================================
+   9. 듣고 따라 읽기
+===================================== */
+
+async function repeatTime(text,token,automatic) {
+
+  if(token!==session) return false;
+
+  $("sentence").className = "repeat";
+
+  $("status").textContent = "🎤 Your turn!";
+
+  if(!automatic) {
+
+    $("countdown").textContent =
+      "Read together!";
+
+    return true;
+
+  }
+
+  const minimum = Number(
+    $("repeatTime").value
+  );
+
+  const seconds = Math.max(
+
+    minimum,
+
+    Math.ceil(text.split(/\s+/).length*.7)+2
+
+  );
+
+  for(let remaining=seconds;remaining>0;remaining--) {
+
+    if(token!==session) return false;
+
+    $("countdown").textContent = remaining;
+
+    await sleep(1000);
+
+  }
+
+  if(token!==session) return false;
+
+  $("countdown").textContent = "";
+
+  $("status").textContent = "⭐ Great job!";
+
+  await sleep(650);
+
+  return token===session;
+
+}
+
+async function startReading() {
+
+  stopReading();
+
+  if(mode===3) return;
+
+  const token = session;
+
+  const items = getItems();
+
+  const interactive = mode===1 || mode===2;
+
+  const automatic =
+
+    !interactive ||
+
+    $("readingMode").value==="auto";
+
+  while(index<items.length && token===session) {
+
+    await render();
+
+    if(token!==session) return;
+
+    const item = items[index];
+
+    $("sentence").className = "listening";
+
+    $("status").textContent = "👂 Listen!";
+
+    const success = await speak(item.text,token);
+
+    if(!success || token!==session) return;
+
+    if(interactive) {
+
+      const completed = await repeatTime(
+        item.text,
+        token,
+        automatic
+      );
+
+      if(!completed) return;
+
+    } else {
+
+      const nextItem = items[index+1];
+
+      const pageChanges =
+        nextItem && nextItem.page!==item.page;
+
+      await sleep(pageChanges?1700:800);
+
+    }
+
+    if(token!==session) return;
+
+    if(!automatic) return;
+
+    if(index===items.length-1) {
+
+      finishActivity();
+
+      return;
+
+    }
+
+    index++;
+
+  }
+
+}
+
+async function repeatCurrent() {
+
+  stopReading();
+
+  if(mode===3) return;
+
+  const token = session;
+
+  const item = getItems()[index];
+
+  $("sentence").className = "listening";
+
+  $("status").textContent = "👂 Listen!";
+
+  const success = await speak(item.text,token);
+
+  if(!success || token!==session) return;
+
+  if(mode===1 || mode===2) {
+
+    await repeatTime(
+
+      item.text,
+      token,
+      $("readingMode").value==="auto"
+
+    );
+
+  } else {
+
+    $("sentence").className = "";
+
+    $("status").textContent = "Ready?";
+
+  }
+
+}
+
+function finishActivity() {
+
+  $("sentence").className = "";
+
+  $("status").textContent =
+    "🎉 Wonderful! You did it!";
+
+  $("countdown").textContent = "⭐⭐⭐";
+
+  $("progressBar").style.width = "100%";
+
+  $("nextButton").disabled = true;
+
+}
+
+function previous() {
+
+  stopReading();
+
+  $("nextButton").disabled = false;
+
+  if(index>0) index--;
+
+  render();
+
+}
+
+function next() {
+
+  stopReading();
+
+  if(index<getItems().length-1) {
+
+    index++;
+
+    if(mode===1 || mode===2) {
+
+      startReading();
+
+    } else {
+
+      render();
+
+    }
+
+  } else {
+
+    finishActivity();
+
+  }
+
+}
+
+function restart() {
+
+  stopReading();
+
+  index = 0;
+
+  $("nextButton").disabled = false;
+
+  startReading();
+
+}
+
+function toggleMeaning() {
+
+  meaningVisible = !meaningVisible;
+
+  $("meaning").classList.toggle(
+    "hidden",!meaningVisible
+  );
+
+}
+
+/* =====================================
+   10. 행성 듣고 찾기 게임
+===================================== */
+
+function shuffle(array) {
+
+  const result = [...array];
+
+  for(let i=result.length-1;i>0;i--) {
+
+    const j = Math.floor(Math.random()*(i+1));
+
+    [result[i],result[j]] =
+      [result[j],result[i]];
+
+  }
+
+  return result;
+
+}
+
+function initializeGame() {
+
+  score = 0;
+  gameIndex = 0;
+
+  const planets = [
+
+    "Mercury",
+    "Venus",
+    "Earth",
+    "Mars",
+    "Jupiter",
+    "Saturn",
+    "Uranus",
+    "Neptune"
+
+  ];
+
+  gameOrder = shuffle(
+
+    words.filter(word=>planets.includes(word.name))
+
+  );
+
+  setupQuestion();
+
+}
+
+async function setupQuestion() {
+
+  stopReading();
+
+  const token = session;
+
+  solved = false;
+
+  $("feedback").textContent = "";
+
+  $("choices").replaceChildren();
+
+  $("gameNext").disabled = true;
+
+  if(gameIndex>=gameOrder.length) {
+
+    $("question").textContent =
+      "Amazing, space explorer!";
+
+    $("stars").textContent =
+      `⭐ ${score} / ${gameOrder.length}`;
+
+    $("feedback").textContent =
+      "You found all the planets!";
+
+    $("progressText").textContent =
+      "Mission Complete!";
+
+    $("progressBar").style.width = "100%";
+
+    $("gameNext").textContent = "Play Again";
+
+    $("gameNext").disabled = false;
+
+    return;
+
+  }
+
+  target = gameOrder[gameIndex];
+
+  $("gameNext").textContent = "Next Question ▶";
+
+  $("stars").textContent = "⭐ "+score;
+
+  $("question").textContent =
+    `Can you find ${target.name}?`;
+
+  updateProgress(
+
+    gameIndex,
+    gameOrder.length,
+    `Question ${gameIndex+1} / ${gameOrder.length}`
+
+  );
+
+  const otherWords = shuffle(
+
+    gameOrder.filter(
+      word=>word.name!==target.name
+    )
+
+  ).slice(0,2);
+
+  const options = shuffle([
+    target,...otherWords
+  ]);
+
+  const pictures = await Promise.all(
+
+    options.map(word=>getPlanetImage(word))
+
+  );
+
+  if(token!==session || mode!==3) return;
+
+  if(pictures.some(picture=>!picture)) {
+
+    $("feedback").textContent =
+      "하단의 이미지 연결 버튼으로 사진을 선택해 주세요.";
+
+    return;
+
+  }
+
+  options.forEach((word,i)=>{
+
+    const button = document.createElement("button");
+
+    button.className = "choice";
+
+    button.setAttribute("aria-label",word.name);
+
+    const img = document.createElement("img");
+
+    img.alt = "Planet picture";
+
+    applyPicture(img,pictures[i]);
+
+    button.appendChild(img);
+
+    button.onclick = ()=>checkAnswer(word,button);
+
+    $("choices").appendChild(button);
+
+  });
+
+}
+
+function readQuestion() {
+
+  if(gameIndex>=gameOrder.length) return;
+
+  if(!$("choices").children.length) return;
+
+  stopReading();
+
+  speak(`Can you find ${target.name}?`);
+
+}
+
+async function checkAnswer(word,button) {
+
+  if(solved) return;
+
+  stopReading();
+
+  const token = session;
+
+  if(word.name===target.name) {
+
+    solved = true;
+
+    score++;
+
+    button.classList.add("correct");
+
+    const label = document.createElement("div");
+
+    label.className = "choiceName";
+
+    label.textContent = word.name;
+
+    button.appendChild(label);
+
+    $("stars").textContent = "⭐ "+score;
+
+    $("feedback").textContent =
+      `Great job! That's ${word.name}!`;
+
+    $("gameNext").disabled = false;
+
+    updateProgress(
+
+      gameIndex+1,
+      gameOrder.length,
+      `Question ${gameIndex+1} / ${gameOrder.length}`
+
+    );
+
+    await speak(
+      `Great job! That's ${word.name}!`,
+      token
+    );
+
+  } else {
+
+    button.classList.add("wrong");
+
+    $("feedback").textContent =
+      "💛 Let's try again!";
+
+    await speak("Let's try again!",token);
+
+    if(token===session && !solved) {
+
+      await speak(
+        `Can you find ${target.name}?`,
+        token
+      );
+
+    }
+
+  }
+
+}
+
+async function nextQuestion() {
+
+  if(gameIndex>=gameOrder.length) {
+
+    initializeGame();
+
+    return;
+
+  }
+
+  if(!solved) return;
+
+  gameIndex++;
+
+  await setupQuestion();
+
+  if(mode!==3) return;
+
+  if(gameIndex<gameOrder.length) {
+
+    readQuestion();
+
+  } else {
+
+    speak(
+      "Amazing! You found all the planets!"
+    );
+
+  }
+
+}
+
+/* =====================================
+   11. 앱 실행
+===================================== */
+
+window.addEventListener("pagehide",()=>{
+
+  if("speechSynthesis" in window) {
+
+    speechSynthesis.cancel();
+
+  }
+
+});
+
+changeMode(0);
+
+</script>
+
+</body>
+</html>
